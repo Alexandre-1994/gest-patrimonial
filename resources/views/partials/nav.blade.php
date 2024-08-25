@@ -19,6 +19,15 @@
                 <a class="nav-link" href="{{ url('/assets') }}">Cadastro de Ativos</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ url('/physical_inventories') }}">Gestão de Inventário</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('asset_movements.index') }}">Movimentações</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('/users') }}">Gestão de Usuários</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="#">Relatórios</a>
             </li>
             <li class="nav-item">

@@ -22,7 +22,12 @@ return new class extends Migration
             $table->string('location');
             $table->string('category');
             $table->string('supplier');
+            $table->enum('state', ['in_use', 'stored', 'to_be_scrapped'])->default('stored');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->boolean('is_scrapped')->default(false);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

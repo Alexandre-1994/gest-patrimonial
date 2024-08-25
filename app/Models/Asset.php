@@ -17,8 +17,15 @@ class Asset extends Model
         'useful_life',
         'location',
         'category',
-        'supplier'
+        'supplier',
+        'state',
+        'user_id',
+        'is_scrapped',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected $casts = [
         'acquisition_date' => 'date',
