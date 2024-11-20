@@ -12,16 +12,32 @@ class AssetMovement extends Model
     use HasFactory;
     protected $fillable = [
         'asset_id',
-        'old_location',
-        'new_location',
-        'moved_at',
-        'notes',
+        'from_user_id',
+        'to_user_id',
+        'from_location',
+        'to_location',
+        'reason',
+        'movement_date',
+        'status',
+        'notes'
     ];
+
     protected $casts = [
-        'moved_at' => 'datetime',
+        'movement_date' => 'datetime'
     ];
+
     public function asset()
     {
         return $this->belongsTo(Asset::class);
+    }
+
+    public function fromUser()
+    {
+        return $this->belongsTo(User::class, 'from_user_id');
+    }
+
+    public function toUser()
+    {
+        return $this->belongsTo(User::class, 'to_user_id');
     }
 }

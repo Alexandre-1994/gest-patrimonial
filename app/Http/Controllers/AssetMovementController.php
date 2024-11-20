@@ -33,18 +33,28 @@ class AssetMovementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Asset $asset)
     {
         $validated = $request->validate([
-            'asset_id' => 'required|exists:assets,id',
-            'old_location' => 'required|string|max:255',
-            'new_location' => 'required|string|max:255',
-            'moved_at' => 'required|date',
-            'notes' => 'nullable|string',
+            'to_user_id' => 'required|exists:users,id',
+            'to_location' => 'required',
+            'reason' => 'required',
+            'movement_date' => 'required|date'
         ]);
 
-        AssetMovement::create($validated);
-        return redirect()->route('asset_movements.index')->with('success', 'Movement registered successfully.');
+        $movement = $asset->movements()->create([
+            'from_user_id' => $asset->responsible_user_id,
+            'from_location' => $asset->location,
+            ...$validated
+        ]);
+
+        $asset->update([
+            'responsible_user_id' => $validated['to_user_id'],
+            'location' => $validated['to_location']
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Movimentação registrada com sucesso!');
     }
 
     /**

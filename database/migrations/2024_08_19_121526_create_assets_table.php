@@ -12,22 +12,43 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assets', function (Blueprint $table) {
+            // Identificação básica
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('serial_number')->unique();
-            $table->date('acquisition_date');
-            $table->decimal('acquisition_value', 10, 2);
-            $table->integer('useful_life');
+            $table->foreignId('category_id')->constrained();
             $table->string('location');
-            $table->string('category');
-            $table->string('supplier');
-            $table->enum('state', ['in_use', 'stored', 'to_be_scrapped'])->default('stored');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->boolean('is_scrapped')->default(false);
-            $table->timestamps();
+            $table->string('serial_number')->nullable();
+            $table->string('brand')->nullable();
+            $table->string('model')->nullable();
+            $table->foreignId('cost_center_id')
+                ->constrained()
+                ->after('category_id')
+                ->onDelete('restrict');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            // Dados financeiros
+            $table->decimal('purchase_value', 15, 2);
+            $table->date('purchase_date');
+            $table->decimal('current_value', 15, 2);
+            $table->decimal('depreciation_rate', 5, 2);
+            $table->decimal('maintenance_cost_total', 15, 2)->default(0);
+            $table->foreignId('cost_center_id')->constrained();
+
+            // Informações técnicas
+            $table->text('technical_specifications')->nullable();
+            $table->enum('conservation_status', ['excellent', 'good', 'regular', 'poor']);
+            $table->integer('life_span_months');
+            $table->date('warranty_start')->nullable();
+            $table->date('warranty_end')->nullable();
+
+            // Controle operacional
+            $table->enum('status', ['active', 'inactive', 'maintenance', 'disposed']);
+            $table->foreignId('responsible_user_id')->constrained('users');
+            $table->enum('criticality_level', ['low', 'medium', 'high', 'critical']);
+
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -36,6 +57,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assets');
+        // Schema::dropIfExists('assets');
+        Schema::table('assets', function (Blueprint $table) {
+            $table->dropForeign(['cost_center_id']);
+            $table->dropColumn('cost_center_id');
+        });
     }
 };

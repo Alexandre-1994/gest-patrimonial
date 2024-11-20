@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_movements', function (Blueprint $table) {
+        Schema::create('asset_maintenances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')->constrained();
-            $table->foreignId('from_user_id')->constrained('users');
-            $table->foreignId('to_user_id')->constrained('users');
-            $table->string('from_location');
-            $table->string('to_location');
-            $table->text('reason');
-            $table->timestamp('movement_date');
+            $table->string('type'); // preventiva/corretiva
+            $table->date('scheduled_date');
+            $table->date('execution_date')->nullable();
+            $table->text('description');
+            $table->decimal('cost', 15, 2);
+            $table->string('service_provider');
             $table->string('status');
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_movements');
+        //
     }
 };

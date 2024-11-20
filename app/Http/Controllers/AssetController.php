@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use App\Models\AssetMovement;
-use Illuminate\Http\Request;
+use App\Models\AssetCategory;
+use App\Models\CostCenter;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreAssetRequest;
 
 class AssetController extends Controller
 {
@@ -14,7 +18,10 @@ class AssetController extends Controller
      */
     public function index()
     {
-        $assets = Asset::all();
+        $assets = Asset::with(['category', 'responsible'])
+            ->latest()
+            ->paginate(15);
+
         return view('assets.index', compact('assets'));
     }
 
@@ -23,54 +30,54 @@ class AssetController extends Controller
      */
     public function create()
     {
-        $users = User::all(); // Obtém todos os usuários
-        return view('assets.create', compact('users'));
+        $categories = AssetCategory::all();
+        $costCenters = CostCenter::all();
+        $users = User::all();
+
+        return view('assets.create', compact('categories', 'costCenters', 'users'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAssetRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'serial_number' => 'required|string|unique:assets',
-            'acquisition_date' => 'required|date',
-            'acquisition_value' => 'required|numeric',
-            'useful_life' => 'required|integer',
-            'location' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'supplier' => 'required|string|max:255',
-            'state' => 'required|in:in_use,stored,to_be_scrapped',
-            'user_id' => 'nullable|exists:users,id',
-            'is_scrapped' => 'boolean',
-        ]);
-        // Asset::create($validated);
-        // return redirect()->route('assets.index')->with('success', 'Asset created successfully.');
-        // Verifique se há um ativo existente com o mesmo número de série
-        $existingAsset = Asset::where('serial_number', $validated['serial_number'])->first();
+        $validated = $request->validated();
 
-        if ($existingAsset) {
-            // Se um ativo com o mesmo número de série já existir, registre o movimento
-            if ($existingAsset->location !== $validated['location']) {
-                AssetMovement::create([
-                    'asset_id' => $existingAsset->id,
-                    'old_location' => $existingAsset->location,
-                    'new_location' => $validated['location'],
-                    'moved_at' => now(),
-                    'notes' => 'Localização atualizada',
-                ]);
+        DB::transaction(function () use ($validated, $request) {
+            $asset = Asset::create($validated);
+
+            // Handle documents upload
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $document) {
+                    $path = $document->store('assets/documents', 'public');
+                    $asset->documents()->create([
+                        'type' => $request->document_type,
+                        'title' => $document->getClientOriginalName(),
+                        'file_path' => $path
+                    ]);
+                }
             }
 
-            // Atualize o ativo existente
-            $existingAsset->update($validated);
-        } else {
-            // Se o ativo não existir, crie um novo ativo
-            Asset::create($validated);
-        }
+            // Handle photos upload
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $path = $photo->store('assets/photos', 'public');
+                    $asset->photos()->create([
+                        'file_path' => $path,
+                        'is_primary' => $asset->photos()->count() === 0
+                    ]);
+                }
+            }
 
-        return redirect()->route('assets.index')->with('success', 'Asset created successfully.');
+            // Handle tags
+            if ($request->has('tags')) {
+                $asset->tags()->sync($request->tags);
+            }
+        });
+
+        return redirect()->route('assets.index')
+            ->with('success', 'Ativo cadastrado com sucesso!');
     }
 
     /**
@@ -78,6 +85,18 @@ class AssetController extends Controller
      */
     public function show(Asset $asset)
     {
+        $asset->load([
+            'category',
+            'responsible',
+            'costCenter',
+            'maintenances',
+            'documents',
+            'movements',
+            'photos',
+            'tags',
+            'relatedAssets'
+        ]);
+
         return view('assets.show', compact('asset'));
     }
 
@@ -86,8 +105,11 @@ class AssetController extends Controller
      */
     public function edit(Asset $asset)
     {
-        $users = User::all(); // Obtém todos os usuários
-        return view('assets.edit', compact('asset', 'users'));
+        $users = User::all();
+        $categories = AssetCategory::all();
+        $costCenters = CostCenter::all();
+
+        return view('assets.edit', compact('asset', 'users', 'categories', 'costCenters'));
     }
 
     /**
@@ -123,6 +145,9 @@ class AssetController extends Controller
         return redirect()->route('assets.index')->with('success', 'Asset deleted successfully.');
     }
 
+    /**
+     * Display the dashboard
+     */
     public function dashboard()
     {
         $totalAssets = Asset::count();

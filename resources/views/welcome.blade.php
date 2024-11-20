@@ -11,7 +11,37 @@
                 <p>Visão geral das estatísticas dos ativos.</p>
             </div>
         </div>
-
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="filterForm" class="row g-3">
+                            <div class="col-md-3">
+                                <label>Data Inicial</label>
+                                <input type="date" class="form-control" name="date_start">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Data Final</label>
+                                <input type="date" class="form-control" name="date_end">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Categoria</label>
+                                <select class="form-control" name="category">
+                                    <option value="">Todas</option>
+                                    @foreach ($allCategories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <!-- Cartão de Resumo -->
             <div class="col-lg-3 col-md-6 mb-4">
@@ -68,7 +98,93 @@
             </div>
         </div>
 
-        <!-- Adicione mais gráficos ou seções conforme necessário -->
+        <!-- Novo cartão para Valor Total dos Ativos -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Valor Total dos Ativos</h5>
+                    <p class="card-text display-4">R$ {{ number_format($totalValue, 2, ',', '.') }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="text-white">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Novo cartão para Ativos em Manutenção -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Em Manutenção</h5>
+                    <p class="card-text display-4">{{ $maintenanceCount }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="text-white">Ver Manutenções</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        Ativos que Precisam de Atenção
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nome</th>
+                                        <th>Categoria</th>
+                                        <th>Status</th>
+                                        <th>Alerta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($alertAssets as $asset)
+                                        <tr>
+                                            <td>{{ $asset->code }}</td>
+                                            <td>{{ $asset->name }}</td>
+                                            <td>{{ $asset->category->name }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $asset->status_color }}">
+                                                    {{ $asset->status }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $asset->alert_message }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Ativos Depreciados</h5>
+                    <p class="card-text display-4">{{ $depreciatedAssets }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="text-white">Ver Lista</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-secondary text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Garantias a Vencer</h5>
+                    <p class="card-text display-4">{{ $expiringWarranties }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="text-white">Ver Lista</a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -125,5 +241,32 @@
                 responsive: true
             }
         });
+        $('#filterForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '{{ route('dashboard.filter') }}',
+                method: 'GET',
+                data: $(this).serialize(),
+                success: function(response) {
+                    // Atualizar os gráficos com os novos dados
+                    assetsByCategoryChart.data.datasets[0].data = response.assetsByCategory;
+                    assetsByCategoryChart.update();
+
+                    assetsByLocationChart.data.datasets[0].data = response.assetsByLocation;
+                    assetsByLocationChart.update();
+
+                    // Atualizar os números dos cards
+                    updateCards(response);
+                }
+            });
+        });
+
+        function updateCards(data) {
+            $('#totalAssets').text(data.totalAssets);
+            $('#totalValue').text(formatCurrency(data.totalValue));
+            $('#maintenanceCount').text(data.maintenanceCount);
+            // ... atualizar outros cards
+        }
     </script>
 @endsection
