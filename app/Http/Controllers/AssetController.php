@@ -10,9 +10,24 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAssetRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 class AssetController extends Controller
 {
+
+    public function authorize()
+    {
+        return true; // Permita que qualquer usuário use
+    }
+
+    public function rules()
+    {
+        return [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+            // Adicione outras regras conforme necessário
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -40,9 +55,17 @@ class AssetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAssetRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
+        // dd($request->all());
+
+        // $validated = $request->validated();
+        // Validação direta no controlador
+        $validated = $request->validate([
+            'name' => 'required|string|max:255', // Nome é obrigatório, texto e limitado a 255 caracteres
+            'description' => 'nullable|string|max:1000', // Descrição é opcional, texto e limitada a 1000 caracteres
+            'serial_number' => 'required|string|unique:assets,serial_number|max:100',
+        ]);
 
         DB::transaction(function () use ($validated, $request) {
             $asset = Asset::create($validated);
@@ -78,6 +101,11 @@ class AssetController extends Controller
 
         return redirect()->route('assets.index')
             ->with('success', 'Ativo cadastrado com sucesso!');
+
+        // return response()->json([
+        //     "a" => "AAAAA",
+        //     'B' => "BBBB"
+        // ]);
     }
 
     /**
@@ -99,6 +127,13 @@ class AssetController extends Controller
 
         return view('assets.show', compact('asset'));
     }
+
+    // public function show()
+    // {
+
+
+    //     return "Agua";
+    // }
 
     /**
      * Show the form for editing the specified resource.

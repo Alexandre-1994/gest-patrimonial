@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+
 class DashboardController extends Controller
 {
     public function index()
@@ -52,6 +53,15 @@ class DashboardController extends Controller
                 return $asset;
             });
 
+        // Todas as categorias para o filtro
+        $allCategories = AssetCategory::all();
+
+        // Número de ativos depreciados além de 70%
+        $depreciatedAssets = Asset::whereRaw('current_value <= (purchase_value * 0.3)')->count();
+
+        // Número de garantias próximas do vencimento (30 dias)
+        $expiringWarranties = Asset::whereRaw('warranty_end BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)')->count();
+
         return view('welcome', compact(
             'totalAssets',
             'totalCategories',
@@ -61,7 +71,10 @@ class DashboardController extends Controller
             'assetsByCategory',
             'locations',
             'assetsByLocation',
-            'alertAssets'
+            'alertAssets',
+            'allCategories',
+            'depreciatedAssets',
+            'expiringWarranties'
         ));
     }
 

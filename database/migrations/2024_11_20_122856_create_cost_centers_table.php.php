@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cost_centers', function (Blueprint $table) {
-            $table->id();
-            $table->string('code');
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('cost_centers')) {
+            Schema::create('cost_centers', function (Blueprint $table) {
+                $table->id();
+                $table->string('code');
+                $table->string('name');
+                $table->string('description')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

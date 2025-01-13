@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_photos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('asset_id')->constrained();
-            $table->string('file_path');
-            $table->string('description')->nullable();
-            $table->boolean('is_primary')->default(false);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('asset_photos')) {
+            Schema::create('asset_photos', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('asset_id')->constrained();
+                $table->string('file_path');
+                $table->string('description')->nullable();
+                $table->boolean('is_primary')->default(false);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

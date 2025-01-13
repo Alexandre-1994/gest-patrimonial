@@ -13,7 +13,9 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 // Rotas de recursos
 Route::resource('assets', AssetController::class);
+Route::post('assets/store', [AssetController::class, 'store']);
 Route::resource('asset-categories', AssetCategoryController::class);
 Route::resource('asset_movements', AssetMovementController::class);
 Route::resource('physical_inventories', PhysicalInventoryController::class);
 Route::resource('users', UserController::class);
+Route::get('/dashboard/filter', [DashboardController::class, 'filterData'])->name('dashboard.filter');

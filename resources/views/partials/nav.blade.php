@@ -1,48 +1,88 @@
 <!-- resources/views/partials/nav.blade.php -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
-    style="position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-">
-    <a class="navbar-brand" href="#">Sistema de Gestão de Ativos</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Início <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('/assets') }}">Cadastro de Ativos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('/physical_inventories') }}">Gestão de Inventário</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('asset_movements.index') }}">Movimentações</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('/users') }}">Gestão de Usuários</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Relatórios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Configurações</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Avatar"> Usuário
+<nav class="main-navbar">
+    <div class="navbar-container">
+        <!-- Logo -->
+        <div class="navbar-brand-section">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube"></i>
+                <span>Sistema de Gestão de Ativos</span>
+            </a>
+        </div>
+
+        <!-- Menu Central -->
+        <div class="navbar-center">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        <i class="fas fa-home"></i> Início
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="gestaoDropdown" data-toggle="dropdown">
+                        <i class="fas fa-boxes"></i> Gestão
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ url('/assets') }}">
+                            <i class="fas fa-box"></i> Cadastro de Ativos
+                        </a>
+                        <a class="dropdown-item" href="{{ url('/physical_inventories') }}">
+                            <i class="fas fa-clipboard-list"></i> Inventário
+                        </a>
+                        <a class="dropdown-item" href="{{ route('asset_movements.index') }}">
+                            <i class="fas fa-exchange-alt"></i> Movimentações
+                        </a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="adminDropdown" data-toggle="dropdown">
+                        <i class="fas fa-cog"></i> Administração
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ url('/users') }}">
+                            <i class="fas fa-users"></i> Usuários
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="fas fa-chart-bar"></i> Relatórios
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="fas fa-tools"></i> Configurações
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Perfil -->
+        <div class="navbar-profile">
+            <div class="nav-item dropdown">
+                <a class="nav-link" href="#" id="userDropdown" data-toggle="dropdown">
+                    <span class="profile-info">
+                        <span class="profile-name">{{ Auth::user()->name ?? 'Usuário' }}</span>
+                        <span class="profile-role">{{ Auth::user()->role ?? 'Função' }}</span>
+                    </span>
+                    <img src="https://placehold.co/40" class="profile-avatar" alt="Avatar">
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">Perfil</a>
-                    <a class="dropdown-item" href="#">Sair</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-user"></i> Perfil
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-cog"></i> Configurações
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                    {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form> --}}
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </nav>

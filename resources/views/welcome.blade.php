@@ -4,13 +4,15 @@
 
 @section('content')
     <div class="container-fluid">
+        <!-- Cabeçalho -->
         <div class="row" style="margin-top: 3.5rem !important;">
-            <!-- Painel de Resumo -->
             <div class="col-lg-12">
                 <h2 class="mt-4">Dashboard</h2>
                 <p>Visão geral das estatísticas dos ativos.</p>
             </div>
         </div>
+
+        <!-- Filtros -->
         <div class="row mb-4">
             <div class="col-lg-12">
                 <div class="card">
@@ -42,8 +44,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Cards de Estatísticas Principais -->
         <div class="row">
-            <!-- Cartão de Resumo -->
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="card bg-primary text-white h-100">
                     <div class="card-body">
@@ -68,12 +71,60 @@
                 </div>
             </div>
 
-            <!-- Outros Cartões de Resumo -->
-            <!-- Adicione mais cartões de resumo conforme necessário -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Valor Total dos Ativos</h5>
+                        <p class="card-text display-4">R$ {{ number_format($totalValue, 2, ',', '.') }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="text-white">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Em Manutenção</h5>
+                        <p class="card-text display-4">{{ $maintenanceCount }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="text-white">Ver Manutenções</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row mt-4">
-            <!-- Gráfico de Ativos por Categoria -->
+        <!-- Segunda Linha de Cards -->
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-danger text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Ativos Depreciados</h5>
+                        <p class="card-text display-4">{{ $depreciatedAssets }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="text-white">Ver Lista</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-secondary text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Garantias a Vencer</h5>
+                        <p class="card-text display-4">{{ $expiringWarranties }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="text-white">Ver Lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="card">
                     <div class="card-header">
@@ -85,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- Gráfico de Ativos por Localização -->
             <div class="col-lg-6 mb-4">
                 <div class="card">
                     <div class="card-header">
@@ -98,33 +148,8 @@
             </div>
         </div>
 
-        <!-- Novo cartão para Valor Total dos Ativos -->
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Valor Total dos Ativos</h5>
-                    <p class="card-text display-4">R$ {{ number_format($totalValue, 2, ',', '.') }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="#" class="text-white">Ver Detalhes</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Novo cartão para Ativos em Manutenção -->
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card bg-warning text-white h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Em Manutenção</h5>
-                    <p class="card-text display-4">{{ $maintenanceCount }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="#" class="text-white">Ver Manutenções</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
+        <!-- Tabela de Alertas -->
+        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -160,28 +185,6 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card bg-danger text-white h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Ativos Depreciados</h5>
-                    <p class="card-text display-4">{{ $depreciatedAssets }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="#" class="text-white">Ver Lista</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card bg-secondary text-white h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Garantias a Vencer</h5>
-                    <p class="card-text display-4">{{ $expiringWarranties }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="#" class="text-white">Ver Lista</a>
                 </div>
             </div>
         </div>
@@ -256,7 +259,7 @@
                     assetsByLocationChart.data.datasets[0].data = response.assetsByLocation;
                     assetsByLocationChart.update();
 
-                    // Atualizar os números dos cards
+
                     updateCards(response);
                 }
             });

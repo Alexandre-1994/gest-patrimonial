@@ -11,24 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_documents', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('asset_id')->constrained();
-            $table->enum('type', [
-                'invoice',
-                'warranty',
-                'insurance',
-                'certification',
-                'calibration',
-                'manual',
-                'other'
-            ]);
-            $table->string('title');
-            $table->string('file_path');
-            $table->date('expiration_date')->nullable();
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('asset_documents')) {
+            Schema::create('asset_documents', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('asset_id')->constrained();
+                $table->enum('type', [
+                    'invoice',
+                    'warranty',
+                    'insurance',
+                    'certification',
+                    'calibration',
+                    'manual',
+                    'other'
+                ]);
+                $table->string('title');
+                $table->string('file_path');
+                $table->date('expiration_date')->nullable();
+                $table->text('description')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

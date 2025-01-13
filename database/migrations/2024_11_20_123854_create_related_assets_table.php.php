@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('related_assets', function (Blueprint $table) {
-            $table->foreignId('asset_id')->constrained();
-            $table->foreignId('related_asset_id')->constrained('assets');
-            $table->string('relationship_type');
-            $table->text('description')->nullable();
-            $table->primary(['asset_id', 'related_asset_id']);
-        });
+
+        if (!Schema::hasTable('related_assets')) {
+            Schema::create('related_assets', function (Blueprint $table) {
+                $table->foreignId('asset_id')->constrained();
+                $table->foreignId('related_asset_id')->constrained('assets');
+                $table->string('relationship_type');
+                $table->text('description')->nullable();
+                $table->primary(['asset_id', 'related_asset_id']);
+            });
+        }
     }
 
     /**

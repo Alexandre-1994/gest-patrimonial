@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_movements', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('asset_id')->constrained();
-            $table->foreignId('from_user_id')->constrained('users');
-            $table->foreignId('to_user_id')->constrained('users');
-            $table->string('from_location');
-            $table->string('to_location');
-            $table->text('reason');
-            $table->timestamp('movement_date');
-            $table->string('status');
-            $table->text('notes')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('asset_movements')) {
+            Schema::create('asset_movements', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('asset_id');
+                $table->unsignedBigInteger('from_user_id');
+                $table->unsignedBigInteger('to_user_id');
+                $table->string('from_location');
+                $table->string('to_location');
+                $table->text('reason');
+                $table->timestamp('movement_date');
+                $table->string('status');
+                $table->text('notes')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
