@@ -79,7 +79,7 @@
                                 <div class="form-floating">
                                     <input type="number" id="acquisition_value" name="acquisition_value" step="0.01"
                                         class="form-control" placeholder="Valor" required>
-                                    <label for="acquisition_value">Valor de Aquisição (R$)</label>
+                                    <label for="acquisition_value">Valor de Aquisição (MZN)</label>
                                 </div>
                             </div>
                             <div class="col-md-4">

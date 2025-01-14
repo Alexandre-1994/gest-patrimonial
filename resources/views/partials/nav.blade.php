@@ -5,7 +5,7 @@
         <div class="navbar-brand-section">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-cube"></i>
-                <span>Sistema de Gestão de Ativos</span>
+                <span>N’Kaya</span>
             </a>
         </div>
 

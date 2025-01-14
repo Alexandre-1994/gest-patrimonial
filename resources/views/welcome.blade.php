@@ -75,7 +75,7 @@
                 <div class="card bg-info text-white h-100">
                     <div class="card-body">
                         <h5 class="card-title">Valor Total dos Ativos</h5>
-                        <p class="card-text display-4">R$ {{ number_format($totalValue, 2, ',', '.') }}</p>
+                        <p class="card-text display-4">MZN {{ number_format($totalValue, 2, ',', '.') }}</p>
                     </div>
                     <div class="card-footer">
                         <a href="#" class="text-white">Ver Detalhes</a>

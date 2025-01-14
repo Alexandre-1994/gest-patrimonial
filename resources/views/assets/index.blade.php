@@ -105,7 +105,7 @@
                                                 style="background-image: url({{ $asset->image_url ?? '/placeholder.png' }})"></span>
                                             <div>
                                                 <div class="font-weight-medium">{{ $asset->name }}</div>
-                                                <div class="text-muted">Valor: R$
+                                                <div class="text-muted">Valor: MZN
                                                     {{ number_format($asset->value, 2, ',', '.') }}</div>
                                             </div>
                                         </div>

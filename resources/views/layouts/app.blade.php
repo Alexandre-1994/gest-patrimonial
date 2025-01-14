@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Sistema de Gestão de Ativos')</title>
+    <title>@yield('title', 'N’Kaya')</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -18,13 +18,13 @@
     <link href="{{ asset('css/dashboard.css') }}"rel="stylesheet">
     {{-- <link rel="stylesheet" href="/css/dashboard.css"> --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    {{-- <style>
         .mt-4,
         .my-4 {
             margin-top: 6.5rem !important;
             margin-bottom: 6rem !important;
         }
-    </style>
+    </style> --}}
 </head>
 
 <body>
