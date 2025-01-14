@@ -1,21 +1,49 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AssetController;
-use App\Http\Controllers\PhysicalInventoryController;
-use App\Http\Controllers\AssetMovementController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AssetCategoryController;
+use App\Http\Controllers\{
+    AssetController,
+    PhysicalInventoryController,
+    AssetMovementController,
+    UserController,
+    DashboardController,
+    AssetCategoryController,
+    AssetMaintenanceController,
+    AssetDocumentController,
+    CostCenterController
+};
 
-// Rota do Dashboard (página inicial)
+// Dashboard
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-// Rotas de recursos
-Route::resource('assets', AssetController::class);
-Route::post('assets/store', [AssetController::class, 'store']);
-Route::resource('asset-categories', AssetCategoryController::class);
-Route::resource('asset_movements', AssetMovementController::class);
-Route::resource('physical_inventories', PhysicalInventoryController::class);
-Route::resource('users', UserController::class);
 Route::get('/dashboard/filter', [DashboardController::class, 'filterData'])->name('dashboard.filter');
+
+// Ativos
+Route::resource('assets', AssetController::class);
+Route::controller(AssetController::class)->group(function () {
+    Route::post('assets/store', 'store');
+    Route::get('assets/export', 'export')->name('assets.export');
+    Route::post('assets/import', 'import')->name('assets.import');
+});
+
+// Categorias
+Route::resource('asset-categories', AssetCategoryController::class);
+
+// Movimentações
+Route::resource('asset-movements', AssetMovementController::class);
+
+// Inventário Físico
+Route::resource('physical-inventories', PhysicalInventoryController::class);
+
+// Usuários
+Route::resource('users', UserController::class);
+
+// Manutenções
+Route::resource('asset-maintenances', AssetMaintenanceController::class);
+
+// Documentos
+Route::resource('asset-documents', AssetDocumentController::class);
+
+// Centros de Custo
+Route::resource('cost-centers', CostCenterController::class);
+
+Route::resource('asset-movements', AssetMovementController::class);

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AssetMaintenance extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
+
     protected $fillable = [
         'asset_id',
         'type',
@@ -16,17 +17,19 @@ class AssetMaintenance extends Model
         'description',
         'cost',
         'service_provider',
-        'status'
-    ];
-
-    protected $casts = [
-        'scheduled_date' => 'date',
-        'execution_date' => 'date',
-        'cost' => 'decimal:2'
+        'status',
+        'priority',
+        'title',
+        'technical_details'
     ];
 
     public function asset()
     {
         return $this->belongsTo(Asset::class);
+    }
+
+    public function serviceProvider()
+    {
+        return $this->belongsTo(User::class, 'service_provider_id');
     }
 }

@@ -30,9 +30,9 @@
                         <a class="dropdown-item" href="{{ url('/physical_inventories') }}">
                             <i class="fas fa-clipboard-list"></i> Inventário
                         </a>
-                        <a class="dropdown-item" href="{{ route('asset_movements.index') }}">
+                        {{-- <a class="dropdown-item" href="{{ route('asset_movements.index') }}">
                             <i class="fas fa-exchange-alt"></i> Movimentações
-                        </a>
+                        </a> --}}
                     </div>
                 </li>
 

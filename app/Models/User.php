@@ -19,8 +19,18 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'department',
+        'position'
     ];
+    public function responsibleAssets()
+    {
+        return $this->hasMany(Asset::class, 'responsible_user_id');
+    }
+
+    public function managedCostCenters()
+    {
+        return $this->hasMany(CostCenter::class, 'manager_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

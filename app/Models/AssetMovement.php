@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AssetMovement extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
+
     protected $fillable = [
         'asset_id',
         'from_user_id',
@@ -20,10 +19,6 @@ class AssetMovement extends Model
         'movement_date',
         'status',
         'notes'
-    ];
-
-    protected $casts = [
-        'movement_date' => 'datetime'
     ];
 
     public function asset()

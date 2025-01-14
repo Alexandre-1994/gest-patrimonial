@@ -4,88 +4,129 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use App\Models\AssetCategory;
+use App\Models\AssetMaintenance;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Contagens básicas
-        $totalAssets = Asset::count();
-        $totalCategories = AssetCategory::count();
-        $totalValue = Asset::sum('current_value');
-        $maintenanceCount = Asset::where('status', 'maintenance')->count();
+        try {
+            // Dados para o filtro de categorias
+            $allCategories = AssetCategory::select('id', 'name')->get();
 
-        // Dados para o gráfico de Ativos por Categoria
-        $categories = AssetCategory::pluck('name')->toArray();
-        $assetsByCategory = AssetCategory::withCount('assets')
-            ->pluck('assets_count')
-            ->toArray();
+            // Estatísticas para os cards
+            $totalAssets = Asset::count();
+            $totalCategories = AssetCategory::count();
+            $totalValue = Asset::sum('current_value');
+            $maintenanceCount = Asset::where('status', 'maintenance')->count();
+            $depreciatedAssets = Asset::where('conservation_status', 'poor')->count();
+            $expiringWarranties = Asset::whereNotNull('warranty_end')
+                ->where('warranty_end', '<=', now()->addDays(30))
+                ->count();
 
-        // Dados para o gráfico de Ativos por Localização
-        $locations = Asset::distinct('location')->pluck('location')->toArray();
-        $assetsByLocation = collect($locations)->map(function ($location) {
-            return Asset::where('location', $location)->count();
-        })->toArray();
+            // Dados para o gráfico de categorias
+            $categoryData = AssetCategory::withCount('assets')->get();
+            $categories = $categoryData->pluck('name');
+            $assetsByCategory = $categoryData->pluck('assets_count');
 
-        // Ativos que precisam de atenção
-        $alertAssets = Asset::with('category')
-            ->where(function ($query) {
-                $query->where('status', 'maintenance')
-                    // Ativos com garantia próxima do vencimento (30 dias)
-                    ->orWhereRaw('warranty_end BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)')
-                    // Ativos com manutenção preventiva pendente
-                    ->orWhereHas('maintenances', function ($q) {
-                        $q->where('scheduled_date', '<=', now())
-                            ->where('status', 'pending');
-                    })
-                    // Ativos depreciados além de 70%
-                    ->orWhereRaw('current_value <= (purchase_value * 0.3)');
-            })
-            ->get()
-            ->map(function ($asset) {
-                $asset->status_color = $this->getStatusColor($asset->status);
-                $asset->alert_message = $this->getAlertMessage($asset);
-                return $asset;
-            });
+            // Dados para o gráfico de localização
+            $locationData = Asset::select('location')
+                ->selectRaw('COUNT(*) as total')
+                ->groupBy('location')
+                ->get();
+            $locations = $locationData->pluck('location');
+            $assetsByLocation = $locationData->pluck('total');
 
-        // Todas as categorias para o filtro
-        $allCategories = AssetCategory::all();
+            // Ativos que precisam de atenção
+            $alertAssets = Asset::with('category')
+                ->where('status', 'maintenance')
+                ->orWhere('conservation_status', 'poor')
+                ->orWhereRaw('current_value < (purchase_value * 0.2)')
+                ->orWhere(function ($query) {
+                    $query->whereNotNull('warranty_end')
+                        ->where('warranty_end', '<=', now()->addDays(30));
+                })
+                ->get()
+                ->map(function ($asset) {
+                    $asset->status_color = $this->getStatusColor($asset->status);
+                    $asset->alert_message = $this->getAlertMessage($asset);
+                    return $asset;
+                });
 
-        // Número de ativos depreciados além de 70%
-        $depreciatedAssets = Asset::whereRaw('current_value <= (purchase_value * 0.3)')->count();
+            return view('welcome', compact(
+                'allCategories',
+                'totalAssets',
+                'totalCategories',
+                'totalValue',
+                'maintenanceCount',
+                'depreciatedAssets',
+                'expiringWarranties',
+                'categories',
+                'assetsByCategory',
+                'locations',
+                'assetsByLocation',
+                'alertAssets'
+            ));
+        } catch (\Exception $e) {
+            return view('welcome')->with('error', 'Erro ao carregar dados do dashboard: ' . $e->getMessage());
+        }
+    }
 
-        // Número de garantias próximas do vencimento (30 dias)
-        $expiringWarranties = Asset::whereRaw('warranty_end BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY)')->count();
+    public function filterData(Request $request)
+    {
+        try {
+            $query = Asset::query();
 
-        return view('welcome', compact(
-            'totalAssets',
-            'totalCategories',
-            'totalValue',
-            'maintenanceCount',
-            'categories',
-            'assetsByCategory',
-            'locations',
-            'assetsByLocation',
-            'alertAssets',
-            'allCategories',
-            'depreciatedAssets',
-            'expiringWarranties'
-        ));
+            if ($request->date_start) {
+                $query->whereDate('created_at', '>=', $request->date_start);
+            }
+
+            if ($request->date_end) {
+                $query->whereDate('created_at', '<=', $request->date_end);
+            }
+
+            if ($request->category) {
+                $query->where('category_id', $request->category);
+            }
+
+            $data = [
+                'totalAssets' => $query->count(),
+                'totalValue' => $query->sum('current_value'),
+                'maintenanceCount' => $query->where('status', 'maintenance')->count(),
+
+                'assetsByCategory' => AssetCategory::withCount(['assets' => function ($query) use ($request) {
+                    if ($request->date_start) {
+                        $query->whereDate('created_at', '>=', $request->date_start);
+                    }
+                    if ($request->date_end) {
+                        $query->whereDate('created_at', '<=', $request->date_end);
+                    }
+                }])->pluck('assets_count'),
+
+                'assetsByLocation' => $query->select('location')
+                    ->selectRaw('COUNT(*) as total')
+                    ->groupBy('location')
+                    ->pluck('total')
+            ];
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao filtrar dados: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     private function getStatusColor($status)
     {
-        return match ($status) {
+        return [
             'active' => 'success',
             'maintenance' => 'warning',
             'inactive' => 'danger',
-            default => 'secondary'
-        };
+            'disposed' => 'secondary'
+        ][$status] ?? 'primary';
     }
 
     private function getAlertMessage($asset)
@@ -93,48 +134,15 @@ class DashboardController extends Controller
         if ($asset->status === 'maintenance') {
             return 'Em manutenção';
         }
-
-        if ($asset->warranty_end && $asset->warranty_end->between(now(), now()->addDays(30))) {
+        if ($asset->conservation_status === 'poor') {
+            return 'Estado de conservação ruim';
+        }
+        if ($asset->current_value < ($asset->purchase_value * 0.2)) {
+            return 'Altamente depreciado';
+        }
+        if ($asset->warranty_end && $asset->warranty_end <= now()->addDays(30)) {
             return 'Garantia próxima do vencimento';
         }
-
-        if ($asset->current_value <= ($asset->purchase_value * 0.3)) {
-            return 'Alto nível de depreciação';
-        }
-
-        $pendingMaintenance = $asset->maintenances()
-            ->where('scheduled_date', '<=', now())
-            ->where('status', 'pending')
-            ->first();
-
-        if ($pendingMaintenance) {
-            return 'Manutenção preventiva pendente';
-        }
-
         return 'Necessita atenção';
-    }
-
-    public function filterData(Request $request)
-    {
-        $query = Asset::query();
-
-        if ($request->filled('date_start') && $request->filled('date_end')) {
-            $query->whereBetween('purchase_date', [
-                $request->date_start,
-                $request->date_end
-            ]);
-        }
-
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // ... resto da lógica de filtro
-
-        return response()->json([
-            'assetsByCategory' => $query->groupBy('category_id')->count(),
-            'assetsByLocation' => $query->groupBy('location')->count(),
-            // ... outros dados necessários
-        ]);
     }
 }

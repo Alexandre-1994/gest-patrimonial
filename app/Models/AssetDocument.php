@@ -2,23 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AssetDocument extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
+
     protected $fillable = [
         'asset_id',
         'type',
         'title',
         'file_path',
         'expiration_date',
-        'description'
-    ];
-
-    protected $casts = [
-        'expiration_date' => 'date'
+        'description',
+        'document_code'
     ];
 
     public function asset()

@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PhysicalInventory extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
+
     protected $fillable = [
         'inventory_date',
         'notes',
+        'status',
+        'start_date',
+        'end_date',
+        'total_items_expected',
+        'total_items_counted'
     ];
 
-    protected $dates = [
-        'inventory_date',
-    ];
-    // Método adicional para garantir que a data seja formatada corretamente
-    public function getInventoryDateAttribute($value)
+    public function assets()
     {
-        return Carbon::parse($value);
+        return $this->belongsToMany(Asset::class);
     }
 }
