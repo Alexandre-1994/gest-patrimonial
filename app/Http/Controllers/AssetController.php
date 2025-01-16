@@ -7,6 +7,7 @@ use App\Models\AssetCategory;
 use App\Models\CostCenter;
 use Illuminate\Http\Request;
 
+
 class AssetController extends Controller
 {
     public function index(Request $request)
@@ -43,7 +44,8 @@ class AssetController extends Controller
     {
         $categories = AssetCategory::all();
         $costCenters = CostCenter::all();
-        return view('assets.create', compact('categories', 'costCenters'));
+        $users = \App\Models\User::all();
+        return view('assets.create', compact('categories', 'costCenters', 'users'));
     }
 
     public function store(Request $request)
@@ -55,10 +57,23 @@ class AssetController extends Controller
             'cost_center_id' => 'required|exists:cost_centers,id',
             'purchase_value' => 'required|numeric',
             'purchase_date' => 'required|date',
-            // adicione outras validações necessárias
+            'location' => 'required',  // Adicionado este campo
+            'status' => 'required|in:active,inactive,maintenance,disposed',
+            'conservation_status' => 'required|in:excellent,good,regular,poor',
+            'depreciation_rate' => 'required|numeric|between:0,100',
+            'current_value' => 'nullable|numeric',
+            'responsible_user_id' => 'required|exists:users,id',
+            'serial_number' => 'nullable',
+            'brand' => 'nullable',
+            'model' => 'nullable',
+            'technical_specifications' => 'nullable',
+            'life_span_months' => 'required|integer|min:1',
+            'criticality_level' => 'required|in:low,medium,high,critical'
         ]);
-
+        // Definir valores padrão se necessário
+        $validated['current_value'] = $validated['current_value'] ?? $validated['purchase_value'];
         Asset::create($validated);
+
         return redirect()->route('assets.index')
             ->with('success', 'Ativo criado com sucesso.');
     }
@@ -67,7 +82,9 @@ class AssetController extends Controller
     {
         $categories = AssetCategory::all();
         $costCenters = CostCenter::all();
-        return view('assets.edit', compact('asset', 'categories', 'costCenters'));
+        $users = \App\Models\User::all();
+
+        return view('assets.edit', compact('asset', 'categories', 'costCenters', 'users'));
     }
 
     public function update(Request $request, Asset $asset)

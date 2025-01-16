@@ -16,8 +16,19 @@ class CostCenter extends Model
         'manager_id',
         'annual_budget',
         'current_budget',
-        'status'
+        'status',
+        'valid_from'
     ];
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($costCenter) {
+            if (!isset($costCenter->valid_from)) {
+                $costCenter->valid_from = now();
+            }
+        });
+    }
 
     public function assets()
     {

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cost_centers', function (Blueprint $table) {
+            $table->date('valid_from')->default(now())->change();
             // Identificação básica
             $table->id();
             $table->string('code')->unique()->index();
@@ -98,9 +99,15 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('cost_centers');
+    //     Schema::dropIfExists('cost_center_budgets');
+    // }
+    public function down()
     {
-        Schema::dropIfExists('cost_centers');
-        Schema::dropIfExists('cost_center_budgets');
+        Schema::table('cost_centers', function (Blueprint $table) {
+            $table->date('valid_from')->nullable(false)->change();
+        });
     }
 };

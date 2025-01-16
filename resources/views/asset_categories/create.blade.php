@@ -10,6 +10,17 @@
                     </div>
                     <form action="{{ route('asset-categories.store') }}" method="POST">
                         @csrf
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control @error('code') is-invalid @enderror"
+                                    id="code" name="code" value="{{ old('code') }}"
+                                    placeholder="Código da categoria" required>
+                                <label for="code">Código da Categoria</label>
+                                @error('code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="name">Nome</label>

@@ -47,3 +47,5 @@ Route::resource('asset-documents', AssetDocumentController::class);
 Route::resource('cost-centers', CostCenterController::class);
 
 Route::resource('asset-movements', AssetMovementController::class);
+Route::resource('asset-categories', AssetCategoryController::class);
+Route::resource('cost-centers', CostCenterController::class);

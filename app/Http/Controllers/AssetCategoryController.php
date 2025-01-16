@@ -24,7 +24,7 @@ class AssetCategoryController extends Controller
             'name' => 'required|string|max:255|unique:asset_categories',
             'description' => 'nullable|string'
         ]);
-
+        $validated['code'] = strtoupper(substr(str_replace(' ', '', $request->name), 0, 3)) . rand(100, 999);
         AssetCategory::create($validated);
 
         return redirect()->route('asset-categories.index')

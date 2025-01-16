@@ -25,40 +25,145 @@
             </div>
         </div>
 
+        <!-- Alertas de Erro -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Formulário -->
         <div class="card">
             <div class="card-body">
-                <form action="{{ url('assets/store') }}" method="POST" class="needs-validation" novalidate>
+                <form action="{{ route('assets.store') }}" method="POST" class="needs-validation" novalidate>
                     @csrf
 
                     <!-- Informações Básicas -->
                     <div class="form-section mb-4">
                         <h3 class="form-section-title">Informações Básicas</h3>
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" id="name" name="name" class="form-control"
-                                        placeholder="Nome do ativo" required>
-                                    <label for="name">Nome do Ativo</label>
-                                    <div class="invalid-feedback">
-                                        Por favor, informe o nome do ativo.
-                                    </div>
+                                    <input type="text" id="code" name="code"
+                                        class="form-control @error('code') is-invalid @enderror" value="{{ old('code') }}"
+                                        placeholder="Código" required>
+                                    <label for="code">Código</label>
+                                    @error('code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" id="serial_number" name="serial_number" class="form-control"
-                                        placeholder="Número de série" required>
+                                    <input type="text" id="name" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                        placeholder="Nome" required>
+                                    <label for="name">Nome</label>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select id="category_id" name="category_id"
+                                        class="form-select @error('category_id') is-invalid @enderror" required>
+                                        <option value="">Selecione uma categoria</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="category_id">Categoria</label>
+                                    @error('category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select id="cost_center_id" name="cost_center_id"
+                                        class="form-select @error('cost_center_id') is-invalid @enderror" required>
+                                        <option value="">Selecione um centro de custo</option>
+                                        @foreach ($costCenters as $costCenter)
+                                            <option value="{{ $costCenter->id }}"
+                                                {{ old('cost_center_id') == $costCenter->id ? 'selected' : '' }}>
+                                                {{ $costCenter->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="cost_center_id">Centro de Custo</label>
+                                    @error('cost_center_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="location" name="location"
+                                        class="form-control @error('location') is-invalid @enderror"
+                                        value="{{ old('location') }}" placeholder="Localização" required>
+                                    <label for="location">Localização</label>
+                                    @error('location')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações Técnicas -->
+                    <div class="form-section mb-4">
+                        <h3 class="form-section-title">Informações Técnicas</h3>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="serial_number" name="serial_number"
+                                        class="form-control @error('serial_number') is-invalid @enderror"
+                                        value="{{ old('serial_number') }}">
                                     <label for="serial_number">Número de Série</label>
-                                    <div class="invalid-feedback">
-                                        Por favor, informe o número de série.
-                                    </div>
+                                    @error('serial_number')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-4">
                                 <div class="form-floating">
-                                    <textarea id="description" name="description" class="form-control" style="height: 100px" placeholder="Descrição"></textarea>
-                                    <label for="description">Descrição</label>
+                                    <input type="text" id="brand" name="brand"
+                                        class="form-control @error('brand') is-invalid @enderror"
+                                        value="{{ old('brand') }}">
+                                    <label for="brand">Marca</label>
+                                    @error('brand')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="model" name="model"
+                                        class="form-control @error('model') is-invalid @enderror"
+                                        value="{{ old('model') }}">
+                                    <label for="model">Modelo</label>
+                                    @error('model')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="number" id="life_span_months" name="life_span_months"
+                                        class="form-control @error('life_span_months') is-invalid @enderror"
+                                        value="{{ old('life_span_months') }}" required>
+                                    <label for="life_span_months">Vida Útil (meses)</label>
+                                    @error('life_span_months')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -70,80 +175,122 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="date" id="acquisition_date" name="acquisition_date" class="form-control"
-                                        required>
-                                    <label for="acquisition_date">Data de Aquisição</label>
+                                    <input type="number" step="0.01" id="purchase_value" name="purchase_value"
+                                        class="form-control @error('purchase_value') is-invalid @enderror"
+                                        value="{{ old('purchase_value') }}" required>
+                                    <label for="purchase_value">Valor de Compra</label>
+                                    @error('purchase_value')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="number" id="acquisition_value" name="acquisition_value" step="0.01"
-                                        class="form-control" placeholder="Valor" required>
-                                    <label for="acquisition_value">Valor de Aquisição (MZN)</label>
+                                    <input type="date" id="purchase_date" name="purchase_date"
+                                        class="form-control @error('purchase_date') is-invalid @enderror"
+                                        value="{{ old('purchase_date') }}" required>
+                                    <label for="purchase_date">Data de Compra</label>
+                                    @error('purchase_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="number" id="useful_life" name="useful_life" class="form-control"
-                                        placeholder="Vida útil" required>
-                                    <label for="useful_life">Vida Útil (anos)</label>
+                                    <input type="number" step="0.01" id="depreciation_rate" name="depreciation_rate"
+                                        class="form-control @error('depreciation_rate') is-invalid @enderror"
+                                        value="{{ old('depreciation_rate') }}" required>
+                                    <label for="depreciation_rate">Taxa de Depreciação (%)</label>
+                                    @error('depreciation_rate')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Localização e Categorização -->
+                    <!-- Status e Controle -->
                     <div class="form-section mb-4">
-                        <h3 class="form-section-title">Localização e Categorização</h3>
+                        <h3 class="form-section-title">Status e Controle</h3>
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" id="location" name="location" class="form-control"
-                                        placeholder="Localização" required>
-                                    <label for="location">Localização</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-floating">
-                                    <input type="text" id="category" name="category" class="form-control"
-                                        placeholder="Categoria" required>
-                                    <label for="category">Categoria</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-floating">
-                                    <input type="text" id="supplier" name="supplier" class="form-control"
-                                        placeholder="Fornecedor" required>
-                                    <label for="supplier">Fornecedor</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status e Responsável -->
-                    <div class="form-section mb-4">
-                        <h3 class="form-section-title">Status e Responsável</h3>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select id="state" name="state" class="form-select" required>
+                                    <select id="status" name="status"
+                                        class="form-select @error('status') is-invalid @enderror" required>
                                         <option value="">Selecione o status</option>
-                                        <option value="in_use">Em Uso</option>
-                                        <option value="stored">Armazenado</option>
-                                        <option value="to_be_scrapped">Para Descarte</option>
+                                        <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Ativo
+                                        </option>
+                                        <option value="maintenance"
+                                            {{ old('status') == 'maintenance' ? 'selected' : '' }}>Em Manutenção</option>
+                                        <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>
+                                            Inativo</option>
+                                        <option value="disposed" {{ old('status') == 'disposed' ? 'selected' : '' }}>
+                                            Descartado</option>
                                     </select>
-                                    <label for="state">Status</label>
+                                    <label for="status">Status</label>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select id="user_id" name="user_id" class="form-select">
+                                    <select id="conservation_status" name="conservation_status"
+                                        class="form-select @error('conservation_status') is-invalid @enderror" required>
+                                        <option value="">Selecione o estado</option>
+                                        <option value="excellent"
+                                            {{ old('conservation_status') == 'excellent' ? 'selected' : '' }}>Excelente
+                                        </option>
+                                        <option value="good"
+                                            {{ old('conservation_status') == 'good' ? 'selected' : '' }}>Bom</option>
+                                        <option value="regular"
+                                            {{ old('conservation_status') == 'regular' ? 'selected' : '' }}>Regular
+                                        </option>
+                                        <option value="poor"
+                                            {{ old('conservation_status') == 'poor' ? 'selected' : '' }}>Ruim</option>
+                                    </select>
+                                    <label for="conservation_status">Estado de Conservação</label>
+                                    @error('conservation_status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select id="responsible_user_id" name="responsible_user_id"
+                                        class="form-select @error('responsible_user_id') is-invalid @enderror" required>
                                         <option value="">Selecione o responsável</option>
                                         @foreach ($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}"
+                                                {{ old('responsible_user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }}
+                                            </option>
                                         @endforeach
                                     </select>
-                                    <label for="user_id">Responsável</label>
+                                    <label for="responsible_user_id">Responsável</label>
+                                    @error('responsible_user_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select id="criticality_level" name="criticality_level"
+                                        class="form-select @error('criticality_level') is-invalid @enderror" required>
+                                        <option value="">Selecione o nível de criticidade</option>
+                                        <option value="low" {{ old('criticality_level') == 'low' ? 'selected' : '' }}>
+                                            Baixo</option>
+                                        <option value="medium"
+                                            {{ old('criticality_level') == 'medium' ? 'selected' : '' }}>Médio</option>
+                                        <option value="high" {{ old('criticality_level') == 'high' ? 'selected' : '' }}>
+                                            Alto</option>
+                                        <option value="critical"
+                                            {{ old('criticality_level') == 'critical' ? 'selected' : '' }}>Crítico</option>
+                                    </select>
+                                    <label for="criticality_level">Nível de Criticidade</label>
+                                    @error('criticality_level')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
