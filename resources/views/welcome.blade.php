@@ -66,7 +66,7 @@
                         <p class="card-text display-4">{{ $totalCategories }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="text-white">Ver Detalhes</a>
+                        <a href="{{ route('assets.by-category') }}" class="text-white">Ver Detalhes</a>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         <p class="card-text display-4">MZN {{ number_format($totalValue, 2, ',', '.') }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="text-white">Ver Detalhes</a>
+                        <a href="{{ route('assets.value') }}" class="text-white">Ver Detalhes</a>
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                         <p class="card-text display-4">{{ $maintenanceCount }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="text-white">Ver Manutenções</a>
+                        <a href="{{ route('assets.maintenance') }}" class="text-white">Ver Manutenções</a>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                         <p class="card-text display-4">{{ $depreciatedAssets }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="text-white">Ver Lista</a>
+                        <a href="{{ route('assets.depreciated') }}" class="text-white">Ver Lista</a>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                         <p class="card-text display-4">{{ $expiringWarranties }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="text-white">Ver Lista</a>
+                        <a href="{{ route('assets.warranty') }}" class="text-white">Ver Lista</a>
                     </div>
                 </div>
             </div>
@@ -194,17 +194,29 @@
 @section('scripts')
     <!-- Inclua a biblioteca Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // Dados para o gráfico de Ativos por Categoria
-        var ctxCategory = document.getElementById('assetsByCategoryChart').getContext('2d');
-        var assetsByCategoryChart = new Chart(ctxCategory, {
+        // Função para gerar cores aleatórias
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Dados para o gráfico de Ativos por Categoria
+        const ctxCategory = document.getElementById('assetsByCategoryChart').getContext('2d');
+        new Chart(ctxCategory, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($categories) !!},
+                labels: @json($categories),
                 datasets: [{
-                    label: 'Quantidade',
-                    data: {!! json_encode($assetsByCategory) !!},
+                    label: 'Quantidade de Ativos',
+                    data: @json($assetsByCategory),
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
@@ -212,13 +224,77 @@
             },
             options: {
                 responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribuição de Ativos por Categoria'
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
                     }
                 }
             }
         });
+
+        // Dados para o gráfico de Ativos por Localização
+        // const ctxLocation = document.getElementById('assetsByLocationChart').getContext('2d');
+        // new Chart(ctxLocation, {
+        //     type: 'pie',
+        //     data: {
+        //         labels: @json($locations),
+        //         datasets: [{
+        //             data: @json($assetsByLocation),
+        //             backgroundColor: Array(@json($locations).length).fill().map(() => {
+        //                 const color = getRandomColor();
+        //                 return `rgba(${parseInt(color.slice(1,3),16)}, ${parseInt(color.slice(3,5),16)}, ${parseInt(color.slice(5,7),16)}, 0.5)`;
+        //             }),
+        //             borderColor: 'rgba(255, 255, 255, 0.8)',
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true,
+        //         plugins: {
+        //             legend: {
+        //                 position: 'right',
+        //             },
+        //             title: {
+        //                 display: true,
+        //                 text: 'Distribuição de Ativos por Localização'
+        //             }
+        //         }
+        //     }
+        // });
+        // var ctxCategory = document.getElementById('assetsByCategoryChart').getContext('2d');
+        // var assetsByCategoryChart = new Chart(ctxCategory, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: {!! json_encode($categories) !!},
+        //         datasets: [{
+        //             label: 'Quantidade',
+        //             data: {!! json_encode($assetsByCategory) !!},
+        //             backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        //             borderColor: 'rgba(54, 162, 235, 1)',
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true,
+        //         scales: {
+        //             y: {
+        //                 beginAtZero: true
+        //             }
+        //         }
+        //     }
+        // });
 
         // Dados para o gráfico de Ativos por Localização
         var ctxLocation = document.getElementById('assetsByLocationChart').getContext('2d');

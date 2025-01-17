@@ -25,6 +25,7 @@
             margin-bottom: 6rem !important;
         }
     </style> --}}
+    @yield('styles')
 </head>
 
 <body>
@@ -42,6 +43,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 
 </html>

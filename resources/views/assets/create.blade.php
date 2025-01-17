@@ -49,8 +49,8 @@
                             <div class="col-md-4">
                                 <div class="form-floating">
                                     <input type="text" id="code" name="code"
-                                        class="form-control @error('code') is-invalid @enderror" value="{{ old('code') }}"
-                                        placeholder="Código" required>
+                                        class="form-control @error('code') is-invalid @enderror" value="{{ $code }}"
+                                        placeholder="Código" readonly>
                                     <label for="code">Código</label>
                                     @error('code')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -416,6 +416,15 @@
 @section('scripts')
     <script>
         // Validação do formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('{{ route('assets.next-code') }}')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('code_display').value = data.code;
+                    document.getElementById('code').value = data.code;
+                })
+                .catch(error => console.error('Erro ao gerar código:', error));
+        });
         (function() {
             'use strict'
             var forms = document.querySelectorAll('.needs-validation')
