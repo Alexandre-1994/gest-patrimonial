@@ -21,6 +21,10 @@ class AssetMovement extends Model
         'notes'
     ];
 
+    protected $casts = [
+        'movement_date' => 'datetime'
+    ];
+
     public function asset()
     {
         return $this->belongsTo(Asset::class);

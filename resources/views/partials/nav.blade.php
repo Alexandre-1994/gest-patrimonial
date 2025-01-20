@@ -30,18 +30,27 @@
                         <a class="dropdown-item" href="{{ url('/physical_inventories') }}">
                             <i class="fas fa-clipboard-list"></i> Inventário
                         </a>
-                        <a class="dropdown-item" href="{{ url('/asset-categories') }}">
-                            <i class="fas fa-clipboard-list"></i> Categorias
-                        </a>
-                        <a class="dropdown-item" href="{{ url('/cost-centers') }}">
-                            <i class="fas fa-clipboard-list"></i> Sentro de custo
-                        </a>
+
                         <a class="dropdown-item" href="{{ url('asset_movements') }}">
                             <i class="fas fa-exchange-alt"></i> Movimentações
                         </a>
                     </div>
                 </li>
 
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="adminDropdown" data-toggle="dropdown">
+                        <i class="fa fa-wrench"></i> Configurações
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ url('/asset-categories') }}">
+                            <i class="fa fa-tags"></i> Categorias
+                        </a>
+                        <a class="dropdown-item" href="{{ url('/cost-centers') }}">
+                            <i class="fa fa-compress"></i> Sentro de custo
+                        </a>
+                    </div>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#" id="adminDropdown" data-toggle="dropdown">
                         <i class="fas fa-cog"></i> Administração
@@ -59,6 +68,7 @@
                         </a>
                     </div>
                 </li>
+
             </ul>
         </div>
 

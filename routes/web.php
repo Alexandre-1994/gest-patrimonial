@@ -46,7 +46,7 @@ Route::resource('asset-documents', AssetDocumentController::class);
 // Centros de Custo
 Route::resource('cost-centers', CostCenterController::class);
 
-Route::resource('asset-movements', AssetMovementController::class);
+// Route::resource('asset-movements', AssetMovementController::class);
 Route::resource('asset-categories', AssetCategoryController::class);
 Route::resource('cost-centers', CostCenterController::class);
 // Route::get('/assets/by-category', [AssetController::class, 'byCategory'])->name('assets.by-category');
@@ -56,3 +56,4 @@ Route::get('assets-maintenance', [AssetController::class, 'inMaintenance'])->nam
 Route::get('assets-depreciated', [AssetController::class, 'depreciated'])->name('assets.depreciated');
 Route::get('assets-warranty', [AssetController::class, 'warranty'])->name('assets.warranty');
 Route::get('/assets/next-code', [AssetController::class, 'getNextCode'])->name('assets.next-code');
+// Route::resource('asset-movements', AssetMovementController::class);
