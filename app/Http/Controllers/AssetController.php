@@ -74,7 +74,10 @@ class AssetController extends Controller
             'model' => 'nullable',
             'technical_specifications' => 'nullable',
             'life_span_months' => 'required|integer|min:1',
-            'criticality_level' => 'required|in:low,medium,high,critical'
+            'criticality_level' => 'required|in:low,medium,high,critical',
+            'warranty_start' => 'nullable|date',
+            'warranty_end' => 'nullable|date|after:warranty_start',
+            'warranty_details' => 'nullable|string'
         ]);
         // Definir valores padrão se necessário
         $validated['current_value'] = $validated['current_value'] ?? $validated['purchase_value'];

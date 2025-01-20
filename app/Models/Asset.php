@@ -33,7 +33,14 @@ class Asset extends Model
         'responsible_user_id',
         'criticality_level'
     ];
-
+    protected $casts = [
+        'purchase_date' => 'datetime',
+        'warranty_start' => 'datetime',
+        'warranty_end' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime'
+    ];
     public function category()
     {
         return $this->belongsTo(AssetCategory::class);

@@ -36,7 +36,7 @@
                         <a class="dropdown-item" href="{{ url('/cost-centers') }}">
                             <i class="fas fa-clipboard-list"></i> Sentro de custo
                         </a>
-                        <a class="dropdown-item" href="{{ url('asset_movements') }}">
+                        <a class="dropdown-item" href="{{ url('asset-movements') }}">
                             <i class="fas fa-exchange-alt"></i> Movimentações
                         </a>
                     </div>

@@ -208,7 +208,45 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- Garantia -->
+                    <div class="form-section mb-4">
+                        <h3 class="form-section-title">Informações de Garantia</h3>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="date" id="warranty_start" name="warranty_start"
+                                        class="form-control @error('warranty_start') is-invalid @enderror"
+                                        value="{{ old('warranty_start') }}">
+                                    <label for="warranty_start">Início da Garantia</label>
+                                    @error('warranty_start')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="date" id="warranty_end" name="warranty_end"
+                                        class="form-control @error('warranty_end') is-invalid @enderror"
+                                        value="{{ old('warranty_end') }}">
+                                    <label for="warranty_end">Fim da Garantia</label>
+                                    @error('warranty_end')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="warranty_details" name="warranty_details"
+                                        class="form-control @error('warranty_details') is-invalid @enderror"
+                                        value="{{ old('warranty_details') }}" placeholder="Detalhes da garantia">
+                                    <label for="warranty_details">Detalhes da Garantia</label>
+                                    @error('warranty_details')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Status e Controle -->
                     <div class="form-section mb-4">
                         <h3 class="form-section-title">Status e Controle</h3>

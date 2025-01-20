@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_moviments', function (Blueprint $table) {
+        Schema::create('asset_movements', function (Blueprint $table) {
             // Identificação básica
             $table->id();
             $table->string('movement_code')->unique()->index();
@@ -91,7 +91,7 @@ return new class extends Migration
         Schema::create('asset_movement_documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('movement_id')
-                ->constrained('asset_moviments')
+                ->constrained('asset_movements')
                 ->onDelete('cascade');
             $table->string('document_type');
             $table->string('file_path');

@@ -29,10 +29,10 @@ Route::controller(AssetController::class)->group(function () {
 Route::resource('asset-categories', AssetCategoryController::class);
 
 // Movimentações
-Route::resource('asset-movements', AssetMovementController::class);
+// Route::resource('asset-movements', AssetMovementController::class);
 
 // Inventário Físico
-Route::resource('physical-inventories', PhysicalInventoryController::class);
+Route::resource('physical_inventories', PhysicalInventoryController::class);
 
 // Usuários
 Route::resource('users', UserController::class);
@@ -56,3 +56,14 @@ Route::get('assets-maintenance', [AssetController::class, 'inMaintenance'])->nam
 Route::get('assets-depreciated', [AssetController::class, 'depreciated'])->name('assets.depreciated');
 Route::get('assets-warranty', [AssetController::class, 'warranty'])->name('assets.warranty');
 Route::get('/assets/next-code', [AssetController::class, 'getNextCode'])->name('assets.next-code');
+Route::patch(
+    '/asset-movements/{assetMovement}/approve',
+    [AssetMovementController::class, 'approve']
+)
+    ->name('asset-movements.approve');
+
+Route::patch(
+    '/asset-movements/{assetMovement}/reject',
+    [AssetMovementController::class, 'reject']
+)
+    ->name('asset-movements.reject');
