@@ -249,4 +249,8 @@
             </div>
         </div>
     </div>
+    <a href="{{ route('asset-documents.create', ['asset_id' => $asset->id]) }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Adicionar Documento
+    </a>
+
 @endsection

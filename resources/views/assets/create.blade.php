@@ -333,7 +333,40 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror"
+                                style="height: 100px">{{ old('description') }}</textarea>
+                            <label for="description">Descrição do Ativo</label>
+                            @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea id="technical_specifications" name="technical_specifications"
+                                class="form-control @error('technical_specifications') is-invalid @enderror" style="height: 100px">{{ old('technical_specifications') }}</textarea>
+                            <label for="technical_specifications">Especificações Técnicas</label>
+                            @error('technical_specifications')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="number" step="0.01" id="maintenance_cost_total"
+                                name="maintenance_cost_total"
+                                class="form-control @error('maintenance_cost_total') is-invalid @enderror"
+                                value="{{ old('maintenance_cost_total', 0) }}">
+                            <label for="maintenance_cost_total">Custo Total de Manutenção</label>
+                            @error('maintenance_cost_total')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                     <!-- Botões de Ação -->
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
@@ -477,5 +510,17 @@
                     }, false)
                 })
         })()
+
+        function calculateCurrentValue() {
+            const purchaseValue = parseFloat(document.getElementById('purchase_value').value) || 0;
+            const depreciationRate = parseFloat(document.getElementById('depreciation_rate').value) || 0;
+            const purchaseDate = new Date(document.getElementById('purchase_date').value);
+            const today = new Date();
+            const monthsDiff = (today.getFullYear() - purchaseDate.getFullYear()) * 12 +
+                (today.getMonth() - purchaseDate.getMonth());
+
+            const currentValue = purchaseValue * Math.pow((1 - depreciationRate / 100), monthsDiff / 12);
+            document.getElementById('current_value').value = currentValue.toFixed(2);
+        }
     </script>
 @endsection

@@ -39,6 +39,9 @@
                         <a class="dropdown-item" href="{{ url('asset-movements') }}">
                             <i class="fas fa-exchange-alt"></i> Movimentações
                         </a>
+                        <a class="dropdown-item" href="{{ url('asset-documents') }}">
+                            <i class="fas fa-exchange-alt"></i> documentos
+                        </a>
                     </div>
                 </li>
 
